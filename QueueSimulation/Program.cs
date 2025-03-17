@@ -14,7 +14,7 @@ namespace QSim
     {
         /*
          * Universal program constants here
-         * MAX_Q_SIZE will change the length of buyerQ and be the max cannot be changed by user
+         * MAX_Q_SIZE will change the length of BuyerQ and be the max cannot be changed by user
          * WARNING will cause program to crash if buyers exceed queue size 5 is minimum with standard data
          * EFFECTS causes more memory to have to be created but no significant difference
          * 
@@ -34,7 +34,7 @@ namespace QSim
         const int MAX_Q_SIZE = 5;
         const int MAX_TILLS = 2;
         const int MAX_TIME = 50;
-        const int TILL_SPEED = 300;
+        const int TILL_SPEED = 3;
 
         const int TIME_IDLE = 0;
         const int TIME_BUSY = 1;
@@ -51,6 +51,12 @@ namespace QSim
         const int TOTAL_Q_OCCURRENCE = 4;
         const int TOTAL_NO_WAIT = 5;
 
+        /*
+         * struct used in creation of BuyerQ
+         * @param BuyerID is just a number for the buyer
+         * @param Waiting time is how long the person has been in the queue
+         * @param Items in Basket is how many items they have left
+         */
         public struct Q_Node
         {
             public string BuyerID;
@@ -181,6 +187,15 @@ namespace QSim
             }
         }
 
+        /*
+         * Explicity changes by reference the values of ThisBuyerID, ThisBuyerWaitingTime and ThisBuyerItems to the first buyer in the queue
+         * Shuffles all data along up 1 and sets the final value to its initial state
+         * Substracts -1 from QLength by reference
+         * @param BuyerQ must be at least the size of QLength
+         * @param all others have no conditions apart from that they are none null
+         * @returns next customer by explicit reference
+         * @returns a console statement of the buyer ID with 17 spaces of buffer
+         */
         public static void ServeBuyer(Q_Node[] BuyerQ, ref int QLength, ref string ThisBuyerID, ref int ThisBuyerWaitingTime, ref int ThisBuyerItems)
         {
             ThisBuyerID = BuyerQ[0].BuyerID;
@@ -212,6 +227,12 @@ namespace QSim
             }
         }
 
+        /*
+         * Calculates serving time and implicitly references Tills to assign one of its variables serving time
+         * @param ThisTill must be an index within range of Tills
+         * @returns Tills with an implicitly referenced change
+         * @returns A console statement giving the till number and its serving time
+         */
         public static void CalculateServingTime(int[,] Tills, int ThisTill, int NoOfItems)
         {
             int ServingTime = (NoOfItems / TILL_SPEED) + 1;
