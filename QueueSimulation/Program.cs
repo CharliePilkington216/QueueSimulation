@@ -12,11 +12,29 @@ namespace QSim
 {
     class QueueSimCS
     {
+        /*
+         * Universal program constants here
+         * MAX_Q_SIZE will change the length of buyerQ and be the max cannot be changed by user
+         * WARNING will cause program to crash if buyers exceed queue size 5 is minimum with standard data
+         * EFFECTS causes more memory to have to be created but no significant difference
+         * 
+         * MAX_TILLS controls the size of int[,] Tills and how high the user can change the settings to
+         * WARNING will cause program to crash if too slow min with default data is 2
+         * EFFECTS causes unecassary memory to be reserved no significant issue
+         * 
+         * MAX_TIME controls the size of int[,] Data and how high the user can set it to
+         * WARNING will crash if the simulation takes longer than max time
+         * EFFECTS causes unecessary data to be reserved no significant issue
+         * 
+         * TILL_SPEED effect the time taken to process a customer and cannot be changed by user
+         * WARNING too low may have effect on time
+         * EFFECTS lower values mean more simulation higher values mean quicker
+         */
         const string BLANK = "   ";
-        const int MAX_Q_SIZE = 30;
-        const int MAX_TILLS = 5;
+        const int MAX_Q_SIZE = 5;
+        const int MAX_TILLS = 2;
         const int MAX_TIME = 50;
-        const int TILL_SPEED = 3;
+        const int TILL_SPEED = 300;
 
         const int TIME_IDLE = 0;
         const int TIME_BUSY = 1;
@@ -41,9 +59,9 @@ namespace QSim
         }
         
         /*
-         * @param Tills must be an array of dimensions (6 , 3) to avoid error
+         * @param Tills must be an array of dimensions (MAX_TILLS + 1 , 3) to avoid error
          * @param Stats must be of length 10
-         * @returns 
+         * @returns nothing however has implicitly setted the values to 0 or blank
          */
         public static void ResetDataStructures(int[] Stats, int[,] Tills, Q_Node[] BuyerQ)
         {
