@@ -255,6 +255,11 @@ namespace QSim
             Console.Write($"{ThisBuyerID,17}");
         }
 
+        /*
+         * adds waiting time to the total wait if > the max wait time it rewrites it if no wait it adds 1 to no wait
+         * @param stats is passed by implicit reference
+         * @returns the updated values of stats implicitly
+         */
         public static void UpdateStats(int[] Stats, int WaitingTime)
         {
             Stats[TOTAL_WAIT] += WaitingTime;
@@ -282,6 +287,9 @@ namespace QSim
             Console.WriteLine($"{ThisTill,6}{ServingTime,6}");
         }
 
+        /*
+         * Increases waiting time 
+         */
         public static void IncrementTimeWaiting(Q_Node[] BuyerQ, int QLength)
         {
             for (int Count = 0; Count < QLength; Count++)
@@ -306,6 +314,13 @@ namespace QSim
             }
         }
 
+        /*
+         * simply prints a console message to display the state of registers and the queue
+         * @param NoOfTills must be < Tills.Length
+         * @param QLength must be < BuyerQ.Length
+         * @returns a console message
+         * WARNING any values changed are passed back to the main program
+         */
         public static void OutputTillAndQueueStates(int[,] Tills, int NoOfTills, Q_Node[] BuyerQ, int QLength)
         {
             for (int i = 1; i <= NoOfTills; i++)
@@ -322,7 +337,14 @@ namespace QSim
         }
 
         /*
+         * looks for any free tills if one found it takes a buyer off the queue if there is one
+         * adds this buyers wait time to stats and calculates the tills serving time
+         * tries to find another free till
          * 
+         * if no free tills or the queue is empty it will increment waiting time for those in the queue
+         * updates tills to process items
+         * updates stats to add queue occurence and overide max queue length if it is >
+         * then outputs the queue states
          */
         public static void Serving(int[,] Tills, ref int NoOfTills, Q_Node[] BuyerQ, ref int QLength, int[] Stats)
         {
@@ -393,7 +415,11 @@ namespace QSim
          * otherwise it waits and prints a line in the console
          * serves the people in the queue
          * 
+         * gives the program time to empty the queue and process tills
+         * adds this time to a variable called extra time
          * 
+         * @param nothing and no conditions
+         * @returns only console messages for the simulation
          */
         public static void QueueSimulator()
         {
