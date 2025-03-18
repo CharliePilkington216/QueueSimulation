@@ -65,6 +65,7 @@ namespace QSim
         }
         
         /*
+         * resets implicitly all data structures to 0
          * @param Tills must be an array of dimensions (MAX_TILLS + 1 , 3) to avoid error
          * @param Stats must be of length 10
          * @returns nothing however has implicitly setted the values to 0 or blank
@@ -92,6 +93,13 @@ namespace QSim
             }
         }
 
+        /*
+         * sets SimulationTime and NoOfTills as default 2 and 10 but allows user to change them
+         * retricted between 1 and MAX_TIME and 1 and MAX_TILLS
+         * @param have no restrictions
+         * @param inputs must be only digits with no spaces
+         * @returns a console message to let the user see what they have changed
+         */
         public static void ChangeSettings(ref int SimulationTime, ref int NoOfTills)
         {
             SimulationTime = 10;
@@ -127,6 +135,12 @@ namespace QSim
             }
         }
 
+        /*
+         * Attempts to read in data from the file in debug bin called simulation data
+         * @param data passed by implicit reference must be a (MAX_TIME + 1, 2) array
+         * @param datafile must be format {arival time (single digit only)}:{number of items}
+         * @returns the file values seperated by colons in the textfile by implicit reference
+         */
         public static void ReadInSimulationData(int[,] Data)
         {
             StreamReader FileIn = new StreamReader("SimulationData.txt");
@@ -142,6 +156,11 @@ namespace QSim
             FileIn.Close();
         }
 
+        /*
+         * Outputs a message to the console to indicate the categories
+         * @param nothing 
+         * @returns console message
+         */
         public static void OutputHeading()
         {
             Console.WriteLine();
@@ -151,6 +170,13 @@ namespace QSim
             Console.WriteLine("            |                  |                     |            basket");
         }
 
+        /*
+         * Adds a buyer to the end of the queue and increments by 1
+         * @param QLength must be within MAX_Q_SIZE
+         * @param buyer number must be within range of data
+         * @returns implicitly returns the queue and explicitly references QLength
+         * WARNING any change to data is passed to the main program
+         */
         public static void BuyerJoinsQ(int[,] Data, Q_Node[] BuyerQ, ref int QLength, int BuyerNumber)
         {
             int ItemsInBasket = Data[BuyerNumber, ITEMS];
@@ -159,12 +185,27 @@ namespace QSim
             QLength += 1;
         }
 
+        /*
+         * Outputs the buyer and their number of items then runs BuyerJoinsQ()
+         * @param all values must be non null
+         * @param buyer number must be within Data.Length
+         * @returns BuyerQ by implicit reference
+         * @returns QLength by explicit reference
+         * WARNING change to any variables will affect them in the main program
+         */
         public static void BuyerArrives(int[,] Data, Q_Node[] BuyerQ, ref int QLength, int BuyerNumber, ref int NoOfTills, int[] Stats)
         {
             Console.WriteLine($"  B{BuyerNumber}({Data[BuyerNumber, ITEMS]})");
             BuyerJoinsQ(Data, BuyerQ, ref QLength, BuyerNumber);
         }
 
+        /*
+         * Will do a linear search through Tills to find the first instance of a freetill
+         * @param Tills is a (MAX_TILLS + 1, 3) array
+         * @param NoOfTills must be a number to indicate the number of tills < Tills.Length
+         * @returns index of free till if one exists
+         * @returns -1 otherwise
+         */
         public static int FindFreeTill(int[,] Tills, int NoOfTills)
         {
             bool FoundFreeTill = false;
@@ -232,6 +273,7 @@ namespace QSim
          * @param ThisTill must be an index within range of Tills
          * @returns Tills with an implicitly referenced change
          * @returns A console statement giving the till number and its serving time
+         * WARNING any change of Tills is implicitly passed back
          */
         public static void CalculateServingTime(int[,] Tills, int ThisTill, int NoOfItems)
         {
@@ -279,6 +321,9 @@ namespace QSim
             Console.WriteLine("------------------------------------------------------------------------");
         }
 
+        /*
+         * 
+         */
         public static void Serving(int[,] Tills, ref int NoOfTills, Q_Node[] BuyerQ, ref int QLength, int[] Stats)
         {
             int TillFree;
@@ -340,6 +385,16 @@ namespace QSim
             Console.WriteLine($"{Stats[TOTAL_NO_WAIT]} buyers did not need to queue");
         }
 
+        /*
+         * First few lines up to OuputHeading reserve memory and initialise values
+         * reads in the first buyer arrival from queue 
+         * runs for simulation time iterations
+         * sees if the person in the queue has arrived if so adds them to the queue and puts next buyer time
+         * otherwise it waits and prints a line in the console
+         * serves the people in the queue
+         * 
+         * 
+         */
         public static void QueueSimulator()
         {
             int BuyerNumber = 0;
