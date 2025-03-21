@@ -288,7 +288,9 @@ namespace QSim
         }
 
         /*
-         * Increases waiting time 
+         * Increases waiting time of each buyer in the queue
+         * @param QLength must be less than MAX_Q_SIZE
+         * @returns BuyerQ with implicit reference
          */
         public static void IncrementTimeWaiting(Q_Node[] BuyerQ, int QLength)
         {
@@ -298,6 +300,12 @@ namespace QSim
             }
         }
 
+        /*
+         * Changes the stats of the tills depending on whether they are serving
+         * decreases the time they take to serve by one
+         * @param NoOfTills must be < MAX_TILLS
+         * @returns stats via implicit reference
+         */
         public static void UpdateTills(int[,] Tills, int NoOfTills)
         {
             for (int TillNumber = 0; TillNumber <= NoOfTills; TillNumber++)
@@ -341,10 +349,16 @@ namespace QSim
          * adds this buyers wait time to stats and calculates the tills serving time
          * tries to find another free till
          * 
-         * if no free tills or the queue is empty it will increment waiting time for those in the queue
-         * updates tills to process items
-         * updates stats to add queue occurence and overide max queue length if it is >
-         * then outputs the queue states
+         * if free tills and the queue is empty it will process a new customer and shuffle the queue up
+         * 
+         * Increments waiting time for all those in the queue
+         * Changes the stats of the tills whether they are processing or idle
+         * 
+         * updates stats on queue length
+         * prints message on tills and people
+         * 
+         * @params are all referenced and will be mutated
+         * @returns a console message and lots of side effects
          */
         public static void Serving(int[,] Tills, ref int NoOfTills, Q_Node[] BuyerQ, ref int QLength, int[] Stats)
         {
@@ -374,6 +388,13 @@ namespace QSim
             OutputTillAndQueueStates(Tills, NoOfTills, BuyerQ, QLength);
         }
 
+        /*
+         * Goes through to check if all the tills are idle
+         * 
+         * @param NoOfTills must be < MAX_TILLS
+         * @returns true if all Tills from 0 to NoOfTills are idle
+         * @returns false otherwise
+         */
         public static bool TillsBusy(int[,] Tills, int NoOfTills)
         {
             bool IsBusy = false;
@@ -389,6 +410,11 @@ namespace QSim
             return IsBusy;
         }
 
+        /*
+         * Simply outputs all the stats of the simulation
+         * @param Stats contains majority of data
+         * @returns console message
+         */
         public static void OutputStats(int[] Stats, int BuyerNumber, int SimulationTime)
         {
             double AverageWaitingTime, AverageQLength;
@@ -474,6 +500,7 @@ namespace QSim
             OutputStats(Stats, BuyerNumber, SimulationTime);
         }
 
+        //Main program start
         static void Main(string[] args)
         {
             QueueSimulator();
